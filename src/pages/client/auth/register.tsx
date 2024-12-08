@@ -1,6 +1,7 @@
-import { Button, Divider, Form, FormProps, Input } from "antd";
+import { registerAPI } from "@/services/api";
+import { App, Button, Divider, Form, FormProps, Input } from "antd";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface IFieldType {
     fullName: string;
@@ -10,19 +11,26 @@ interface IFieldType {
 };
 
 const RegisterPage = () => {
-
     const [isFinish, setItFinish] = useState<boolean>(false);
+    const { message } = App.useApp();
 
-    const onFinish: FormProps<IFieldType>['onFinish'] = (values) => {
-        setItFinish(true);
-        setTimeout(() => {
-            console.log('Success:', values);
-            setItFinish(false);
-        }, 3000);
+    const navigate = useNavigate();
+    const showMessage = (content: string) => {
+        message.success(`${content}`);
     };
 
-    const onFinishFailed: FormProps<IFieldType>['onFinishFailed'] = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+
+    const onFinish: FormProps<IFieldType>['onFinish'] = async (values) => {
+        setItFinish(true);
+        const res = await registerAPI(values.fullName, values.email, values.password, values.phone);
+
+        if (res.data) {
+            showMessage("Đăng Ký Thành Công");
+            navigate("/login");
+        } else {
+            message.error("Email đã tồn tại !!!");
+        }
+        setItFinish(false);
     };
 
     return (
@@ -47,7 +55,6 @@ const RegisterPage = () => {
                         wrapperCol={{ span: 24 }}
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                         autoComplete="off"
 
                     >
@@ -87,7 +94,7 @@ const RegisterPage = () => {
 
                         <Form.Item label={null}>
                             <Button type="primary" htmlType="submit" loading={isFinish}>
-                                Register
+                                Đăng Ký
                             </Button>
                         </Form.Item>
                     </Form>
