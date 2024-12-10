@@ -18,7 +18,6 @@ export const loginAPI = (username: string, password: string) => {
     });
 }
 
-
 // Account
 export const fetchAccountAPI = () => {
     const URL_BACKEND = "/api/v1/auth/account";
@@ -27,6 +26,14 @@ export const fetchAccountAPI = () => {
             delay: 2000
         }
     });
+}
+
+
+
+// Logout
+export const logoutAPI = () => {
+    const URL_BACKEND = "/api/v1/auth/logout";
+    return axios.post(URL_BACKEND);
 }
 
 
