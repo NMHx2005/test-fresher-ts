@@ -37,3 +37,23 @@ export const logoutAPI = () => {
 }
 
 
+// UserTableAdmin
+export const dataUserTableAdmin = (current: number, pageSize: number) => {
+    const URL_BACKEND = `/api/v1/user?current=${current}&pageSize=${pageSize}`;
+    return axios.get<IBackendRes<IModelPaginate<IUserTableAdmin>>>(URL_BACKEND);
+}
+
+
+// getUserAPI
+export const getUsersAPI = (query: string) => {
+    const URL_BACKEND = `/api/v1/user?${query}`;
+    return axios.get<IBackendRes<IModelPaginate<IUserTableAdmin>>>(URL_BACKEND);
+}
+
+
+// createAPI 
+export const createAPI = (fullName: string, email: string, password: string, phone: string) => {
+    const URL_BACKEND = `/api/v1/user`;
+    const data = { fullName, email, password, phone };
+    return axios.post<IBackendRes<IModelPaginate<IUserTableAdmin>>>(URL_BACKEND, data);
+}

@@ -16,7 +16,7 @@ declare global {
             pages: number;
             total: number;
         },
-        results: T[]
+        result: T[]
     }
 
     interface IRegister {
@@ -48,6 +48,18 @@ declare global {
 
     interface IFetchAccount {
         user: IUser
+    }
+
+    interface IUserTableAdmin {
+        _id: string;
+        fullName: string;
+        email: string;
+        phone: string;
+        role: string;
+        avatar: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }
 
 }

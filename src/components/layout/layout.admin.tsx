@@ -140,7 +140,7 @@ const LayoutAdmin = () => {
                 <Layout>
                     <div className='admin-header' style={{
                         height: "50px",
-                        borderBottom: "1px solid #240414",
+                        borderBottom: "1px solid #ccc",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
