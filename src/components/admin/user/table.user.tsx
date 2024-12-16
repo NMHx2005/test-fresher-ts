@@ -1,12 +1,13 @@
 import { getUsersAPI } from '@/services/api';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, Upload } from 'antd';
 import { useRef, useState } from 'react';
 import { dateRangeValidate } from '@/helpers/helper';
 import UserDetail from './user.detail';
 import CreateUser from './create.user';
+import UploadUser from './upload.user';
 
 type TSearch = {
     fullName: string;
@@ -30,6 +31,8 @@ interface IUser {
 const TableUser = () => {
     const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
     const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+    const [openModelImport, setOpenModalImport] = useState<boolean>(false);
+
     const [dataUser, setDataUser] = useState<IUser | null>(null);
     const [meta, setMeta] = useState({
         current: 1,
@@ -109,6 +112,8 @@ const TableUser = () => {
         actionRef.current?.reload();
     }
 
+
+
     return (
         <>
             <ProTable<IUserTableAdmin, TSearch>
@@ -132,15 +137,17 @@ const TableUser = () => {
                             query += `&createdAt>=${createDateRange[0]}&createdAt<=${createDateRange[1]}`
                         }
                     }
-                    if (sort.createdAt) {
+                    // Xử lý phần sort theo createdAt
+                    if (sort && sort.createdAt) {
                         if (sort.createdAt === "ascend") {
                             query += `&sort=createdAt`;
                         } else {
                             query += `&sort=-createdAt`;
                         }
+                    } else {
+                        // Nếu không có sort.createdAt, áp dụng mặc định
+                        query += `&sort=-createdAt`;
                     }
-
-                    query += `&sort=-createdAt`
 
 
                     const res = await getUsersAPI(query);
@@ -169,6 +176,26 @@ const TableUser = () => {
                 toolBarRender={() => [
                     <Button
                         key="button"
+                        icon={<ExportOutlined />}
+                        type="primary"
+                        onClick={() => {
+                            // setOpenModalImport(true)
+                        }}
+                    >
+                        Export
+                    </Button>,
+                    <Button
+                        key="button"
+                        icon={<ImportOutlined />}
+                        type="primary"
+                        onClick={() => {
+                            setOpenModalImport(true)
+                        }}
+                    >
+                        Import
+                    </Button>,
+                    <Button
+                        key="button"
                         icon={<PlusOutlined />}
                         onClick={() => {
                             setOpenModalCreate(true);
@@ -177,7 +204,6 @@ const TableUser = () => {
                     >
                         Add new
                     </Button>
-
                 ]}
             />
             <UserDetail
@@ -192,6 +218,13 @@ const TableUser = () => {
                 refreshTable={refreshTable}
                 setOpenModalCreate={setOpenModalCreate}
             />
+
+            <UploadUser
+                refreshTable={refreshTable}
+                openModelImport={openModelImport}
+                setOpenModalImport={setOpenModalImport}
+            />
+
         </>
     );
 };

@@ -1,3 +1,4 @@
+import { message } from 'antd';
 
 export { };
 
@@ -60,6 +61,12 @@ declare global {
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+    }
+
+    interface IResponseImport {
+        countSuccess: number;
+        countError: number;
+        detail: any;
     }
 
 }

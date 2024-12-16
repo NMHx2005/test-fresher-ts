@@ -57,3 +57,15 @@ export const createAPI = (fullName: string, email: string, password: string, pho
     const data = { fullName, email, password, phone };
     return axios.post<IBackendRes<IModelPaginate<IUserTableAdmin>>>(URL_BACKEND, data);
 }
+
+
+// bulk-create
+export const bulkCreateUserAPI = (nmhx: {
+    fullName: string;
+    password: string;
+    email: string;
+    phone: string;
+}[]) => {
+    const urlBackend = "/api/v1/user/bulk-create";
+    return axios.post<IBackendRes<IResponseImport>>(urlBackend, nmhx)
+}
