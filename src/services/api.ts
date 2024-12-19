@@ -69,3 +69,25 @@ export const bulkCreateUserAPI = (nmhx: {
     const urlBackend = "/api/v1/user/bulk-create";
     return axios.post<IBackendRes<IResponseImport>>(urlBackend, nmhx)
 }
+
+
+// Update User 
+export const updateUser = (_id: string, fullName: string, phone: string) => {
+    const URL_BACKEND = `/api/v1/user`;
+    const data = { _id, fullName, phone };
+    return axios.put<IBackendRes<IUserTableAdmin>>(URL_BACKEND, data);
+}
+
+// delete user
+export const deleteUser = (id: string) => {
+    const URL_BACKEND = `/api/v1/user/${id}`;
+    return axios.delete<IBackendRes<IUserTableAdmin>>(URL_BACKEND);
+}
+
+// getBookAPI
+export const getBookAPI = (query: string) => {
+    const URL_BACKEND = `/api/v1/book?${query}`;
+    return axios.get<IBackendRes<IModelPaginate<IBookAdmin>>>(URL_BACKEND);
+}
+
+
