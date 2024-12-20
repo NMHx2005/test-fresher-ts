@@ -1,14 +1,16 @@
 import { getBookAPI } from '@/services/api';
-import { DeleteOutlined, EditOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
+import DetailBook from './detail.book';
 
 
 type IBookAdmin = {
     _id: string;
     thumbnail: string;
+    slider: string[];
     mainText: string;
     author: string;
     price: number;
@@ -26,6 +28,10 @@ interface ISearch {
 
 
 const TableBook = () => {
+    const [openDetailBook, setOpenDetailBook] = useState<boolean>(false);
+    const [dataDetailBook, setDataDetailBook] = useState<IBookAdmin | null>(null);
+
+
     const actionRef = useRef<ActionType>();
     const [meta, setMeta] = useState({
         current: 1,
@@ -50,7 +56,8 @@ const TableBook = () => {
                         <a
                             href='#'
                             onClick={() => {
-                                console.log(entity);
+                                setOpenDetailBook(true);
+                                setDataDetailBook(entity);
                             }}
                         >
                             {entity._id}
@@ -186,7 +193,7 @@ const TableBook = () => {
                     pageSizeOptions: ['5', '10', '20', '30'],
                     showSizeChanger: true,
                 }}
-                headerTitle="Danh Sách Sách"
+                headerTitle="Table Books"
                 toolBarRender={() => [
                     <Button
                         key="button"
@@ -199,6 +206,13 @@ const TableBook = () => {
                         Add New
                     </Button>
                 ]}
+            />
+
+            <DetailBook
+                openDetailBook={openDetailBook}
+                setOpenDetailBook={setOpenDetailBook}
+                setDataDetailBook={setDataDetailBook}
+                dataDetailBook={dataDetailBook}
             />
         </>
     );
