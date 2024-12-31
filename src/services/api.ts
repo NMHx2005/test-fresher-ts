@@ -91,3 +91,33 @@ export const getBookAPI = (query: string) => {
 }
 
 
+// getCategoryAPI
+export const getCategoryAPI = () => {
+    const URL_BACKEND = `/api/v1/database/category`;
+    return axios.get<ICategory>(URL_BACKEND);
+}
+
+
+// uploadImage
+export const callUploadBookImg = (fileImg: any, folder: string) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('fileImg', fileImg);
+    return axios<IBackendRes<{
+        fileUploaded: string
+    }>>({
+        method: 'post',
+        url: '/api/v1/file/upload',
+        data: bodyFormData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+            "upload-type": folder
+        },
+    });
+}
+
+
+export const createBookAPI = (thumbnail: string, slider: string[], mainText: string, author: string, price: number, quantity: number, category: string) => {
+    const URL_BACKEND = `/api/v1/book`;
+    const data = { thumbnail, slider, mainText, author, price, quantity, category };
+    return axios.post<IBackendRes<IBookAdmin>>(URL_BACKEND, data);
+}

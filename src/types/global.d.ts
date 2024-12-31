@@ -84,5 +84,13 @@ declare global {
         detail: any;
     }
 
+    interface ICategory {
+        error?: string | string[];
+        message: string;
+        data?: string[];
+    }
+
+
+
 }
 

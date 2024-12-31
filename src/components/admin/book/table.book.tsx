@@ -5,6 +5,7 @@ import { ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
 import DetailBook from './detail.book';
+import CreateBook from './create.book';
 
 
 type IBookAdmin = {
@@ -31,6 +32,7 @@ const TableBook = () => {
     const [openDetailBook, setOpenDetailBook] = useState<boolean>(false);
     const [dataDetailBook, setDataDetailBook] = useState<IBookAdmin | null>(null);
 
+    const [openModalCreate, setOpenModalCreate] = useState(false);
 
     const actionRef = useRef<ActionType>();
     const [meta, setMeta] = useState({
@@ -156,15 +158,22 @@ const TableBook = () => {
                         }
                     }
 
+                    // Default sort by createdAt descending if no sort is provided
+                    let hasSort = false;
                     if (sort) {
                         const sortFields = ['mainText', 'category', 'author', 'price', 'updateAt'];
                         sortFields.forEach(field => {
                             if (sort[field]) {
+                                hasSort = true;
                                 const order = sort[field] === "ascend" ? '' : '-';
                                 query += `&sort=${order}${field}`;
                             }
                         });
                     }
+                    if (!hasSort) {
+                        query += "&sort=-createdAt";
+                    }
+
                     try {
                         const res = await getBookAPI(query);
                         if (res.data) {
@@ -185,6 +194,7 @@ const TableBook = () => {
                         total: 0
                     };
                 }}
+
                 rowKey="_id"
                 pagination={{
                     pageSize: meta.pageSize,
@@ -200,6 +210,7 @@ const TableBook = () => {
                         icon={<PlusOutlined />}
                         onClick={() => {
                             actionRef.current?.reload();
+                            setOpenModalCreate(true);
                         }}
                         type="primary"
                     >
@@ -213,6 +224,12 @@ const TableBook = () => {
                 setOpenDetailBook={setOpenDetailBook}
                 setDataDetailBook={setDataDetailBook}
                 dataDetailBook={dataDetailBook}
+            />
+
+            <CreateBook
+                openModalCreate={openModalCreate}
+                setOpenModalCreate={setOpenModalCreate}
+                refreshTable={refreshTable}
             />
         </>
     );
