@@ -1,11 +1,13 @@
-import { getBookAPI } from '@/services/api';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { deleteBookAPI, getBookAPI } from '@/services/api';
+import { DeleteOutlined, EditOutlined, ExportOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, message, notification, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
 import DetailBook from './detail.book';
 import CreateBook from './create.book';
+import UpdateBook from './update.book';
+import { CSVLink } from 'react-csv';
 
 
 type IBookAdmin = {
@@ -34,6 +36,11 @@ const TableBook = () => {
 
     const [openModalCreate, setOpenModalCreate] = useState(false);
 
+    const [openModalUpdate, setOpenModalUpdate] = useState(false);
+    const [dataUpdateBook, setDataUpdateBook] = useState<IBookAdmin | null>(null);
+
+    const [dataExportBook, setDataExportBook] = useState<IBookAdmin[] | null>(null);
+
     const actionRef = useRef<ActionType>();
     const [meta, setMeta] = useState({
         current: 1,
@@ -41,6 +48,20 @@ const TableBook = () => {
         pages: 0,
         total: 0
     });
+
+    const handleDeleteBook = async (v: IBookAdmin) => {
+        console.log("Check value: ", v);
+        const res = await deleteBookAPI(v._id);
+        if (res.data) {
+            message.success("Xóa Book thành công!");
+            refreshTable();
+        } else {
+            notification.error({
+                description: "Không xóa được",
+                message: "Lỗi !!!!!!!"
+            })
+        }
+    }
 
     const columns: ProColumns<IBookAdmin>[] = [
         {
@@ -121,14 +142,34 @@ const TableBook = () => {
                             color: "orange",
                             cursor: "pointer",
                             marginRight: "10px",
-                        }}>
+                        }}
+                            onClick={() => {
+                                setDataUpdateBook(entity);
+                                setOpenModalUpdate(true);
+                            }}
+                        >
                             <EditOutlined />
                         </span>
-                        <span style={{
-                            color: "red",
-                            cursor: "pointer",
-                        }}>
-                            <DeleteOutlined />
+                        <span
+                            style={{
+                                color: "red",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+
+                            }}
+                        >
+                            <Popconfirm
+                                title="Xóa Book"
+                                description="Bạn có chắc chắn muốn xóa?"
+                                onConfirm={() => handleDeleteBook(entity)}
+                                // onCancel={cancel}
+                                okText="Yes"
+                                cancelText="No"
+                                placement='left'
+                            >
+                                <DeleteOutlined />
+                            </Popconfirm>
                         </span>
                     </>
                 )
@@ -177,6 +218,7 @@ const TableBook = () => {
                     try {
                         const res = await getBookAPI(query);
                         if (res.data) {
+                            setDataExportBook(res.data.result);
                             setMeta(res.data.meta);
                             return {
                                 data: res.data.result,
@@ -206,6 +248,16 @@ const TableBook = () => {
                 headerTitle="Table Books"
                 toolBarRender={() => [
                     <Button
+                        type="primary"
+                        key="button"
+                        onClick={() => {
+
+                        }}
+                        icon={<ExportOutlined />}
+                    >
+                        {dataExportBook && <CSVLink data={dataExportBook}>Export</CSVLink>}
+                    </Button>,
+                    <Button
                         key="button"
                         icon={<PlusOutlined />}
                         onClick={() => {
@@ -229,6 +281,15 @@ const TableBook = () => {
             <CreateBook
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
+                refreshTable={refreshTable}
+            />
+
+
+            <UpdateBook
+                setDataUpdateBook={setDataUpdateBook}
+                dataUpdateBook={dataUpdateBook}
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
                 refreshTable={refreshTable}
             />
         </>

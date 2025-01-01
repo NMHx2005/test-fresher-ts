@@ -116,8 +116,28 @@ export const callUploadBookImg = (fileImg: any, folder: string) => {
 }
 
 
+// createBookAPI
 export const createBookAPI = (thumbnail: string, slider: string[], mainText: string, author: string, price: number, quantity: number, category: string) => {
     const URL_BACKEND = `/api/v1/book`;
     const data = { thumbnail, slider, mainText, author, price, quantity, category };
     return axios.post<IBackendRes<IBookAdmin>>(URL_BACKEND, data);
+}
+
+// update Book API
+export const updateBookAPI = (
+    _id: string,
+    mainText: string, author: string,
+    price: number, quantity: number, category: string,
+    thumbnail: string, slider: string[]
+) => {
+    const urlBackend = `/api/v1/book/${_id}`;
+    return axios.put<IBackendRes<IRegister>>(urlBackend,
+        { mainText, author, price, quantity, category, thumbnail, slider })
+}
+
+
+// Delete Book API
+export const deleteBookAPI = (_id: string) => {
+    const urlBackend = `/api/v1/book/${_id}`;
+    return axios.delete<IBackendRes<IRegister>>(urlBackend);
 }
