@@ -247,16 +247,22 @@ const TableBook = () => {
                 }}
                 headerTitle="Table Books"
                 toolBarRender={() => [
-                    <Button
-                        type="primary"
-                        key="button"
-                        onClick={() => {
-
-                        }}
-                        icon={<ExportOutlined />}
+                    <CSVLink
+                        filename='book-data.csv'
+                        data={dataExportBook || []}
                     >
-                        {dataExportBook && <CSVLink data={dataExportBook}>Export</CSVLink>}
-                    </Button>,
+                        <Button
+                            type="primary"
+                            key="button"
+                            onClick={() => {
+
+                            }}
+                            icon={<ExportOutlined />}
+                        >
+                            Export
+                        </Button>
+                    </CSVLink >
+                    ,
                     <Button
                         key="button"
                         icon={<PlusOutlined />}
