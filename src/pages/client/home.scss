@@ -4,9 +4,9 @@
     display: flex;
 
     .category__Homepage {
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         width: 15%;
         // border: 3px solid #000;
+        background-color: white;
         border-radius: 12px;
     }
 
@@ -14,6 +14,6 @@
         // border: 3px solid rgb(171, 168, 168);
         border-radius: 12px;
         flex: 1;
-        box-shadow: 15px 15px 15px 15px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        background-color: white;
     }
 }

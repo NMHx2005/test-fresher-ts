@@ -90,6 +90,15 @@ export const getBookAPI = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IBookAdmin>>>(URL_BACKEND);
 }
 
+// getBookById
+export const getBookById = (id: string) => {
+    const URL_BACKEND = `/api/v1/book/${id}`;
+    return axios.get<IBackendRes<IBookAdmin>>(URL_BACKEND, {
+        headers: {
+            delay: 3000
+        }
+    });
+}
 
 // getCategoryAPI
 export const getCategoryAPI = () => {

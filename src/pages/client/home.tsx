@@ -92,32 +92,36 @@ const HomePage = () => {
 
     return (
         <>
-            <div className="homePage">
-                <div className="category__Homepage">
-                    <Category
-                        dataCategory={dataCategory}
-                        onTabChange={handleTabChange}
-                        fetchBook={fetchBook}
-                    />
-                </div>
-                <div
-                    className="listBook_homepage"
-                    style={{
-                        marginLeft: "20px",
-                        padding: "16px"
-                    }}
-                >
-                    <div>
-                        <ListBook
-                            loader={loader}
-                            dataBookList={dataBookList}
-                            current={current}
-                            pageSize={pageSize}
-                            setCurrent={setCurrent}
-                            setPageSize={setPageSize}
-                            total={total}
+            <div style={{ background: '#efefef', padding: "20px 0" }}>
+                <div className="homePage">
+                    <div className="category__Homepage">
+                        <Category
+                            dataCategory={dataCategory}
                             onTabChange={handleTabChange}
+                            fetchBook={fetchBook}
                         />
+                    </div>
+                    <div
+                        className="listBook_homepage"
+                        style={{
+                            marginLeft: "20px",
+                            padding: "16px"
+                        }}
+                    >
+                        <div>
+                            <ListBook
+                                loader={loader}
+                                dataCategory={dataCategory}
+                                fetchBook={fetchBook}
+                                dataBookList={dataBookList}
+                                current={current}
+                                pageSize={pageSize}
+                                setCurrent={setCurrent}
+                                setPageSize={setPageSize}
+                                total={total}
+                                onTabChange={handleTabChange}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

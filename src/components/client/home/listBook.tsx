@@ -1,8 +1,11 @@
-import { Spin, Divider, Pagination, Rate, Tabs } from 'antd';
+import { Spin, Divider, Pagination, Rate, Tabs, Col, Drawer } from 'antd';
 import type { TabsProps } from 'antd';
 import './homeDetail.scss';
 import './responsive.home.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { FilterOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import Category from './category';
 
 type IBook = {
     _id: string;
@@ -27,10 +30,14 @@ interface IProps {
     setPageSize: (v: number) => void;
     total: number;
     onTabChange: (key: string) => void;
+    dataCategory: string[] | null;
+    fetchBook: () => void;
 }
 
 
-const ListBook = ({ dataBookList, loader, current, pageSize, setCurrent, setPageSize, total, onTabChange }: IProps) => {
+const ListBook = ({ dataCategory, fetchBook, dataBookList, loader, current, pageSize, setCurrent, setPageSize, total, onTabChange }: IProps) => {
+    const navigate = useNavigate();
+    const [openModalMobile, setOpenModalMobile] = useState(false);
 
     const onChange = (key: string) => {
         onTabChange(key);
@@ -73,17 +80,31 @@ const ListBook = ({ dataBookList, loader, current, pageSize, setCurrent, setPage
         setPageSize(pageSize);
     };
 
+    const showModalMobile = () => {
+        setOpenModalMobile(true);
+    }
+
     return (
         <>
             <div>
                 <div>
                     <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
                 </div>
+                <Col sm={0} xs={24} style={{ margin: "10px 0" }}>
+                    <FilterOutlined onClick={() => showModalMobile()} style={{ fontSize: '24px', cursor: "pointer" }} />
+                    <Drawer width={"70%"} title="Bộ lọc tìm kiếm" onClose={() => setOpenModalMobile(false)} open={openModalMobile}>
+                        <Category
+                            dataCategory={dataCategory}
+                            onTabChange={onTabChange}
+                            fetchBook={fetchBook}
+                        />
+                    </Drawer>
+                </Col>
                 <Spin spinning={loader} size="large" >
                     <div className="BookContainer">
                         {dataBook?.map((item) => (
-                            <div key={item.id} className="BookDetail">
-                                <div style={{ textAlign: 'center' }}>
+                            <div key={item.id} className="BookDetail" onClick={() => navigate(`/book/${item.id}`)}>
+                                <div style={{ textAlign: 'center', overflow: "hidden" }}>
                                     <img
                                         width={'200px'}
                                         alt={item.mainText}
