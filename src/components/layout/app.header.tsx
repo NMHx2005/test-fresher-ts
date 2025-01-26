@@ -15,6 +15,7 @@ const AppHeader = (props: any) => {
     const { message } = App.useApp();
 
     const { isAuthenticated, user, setUser, setIsAuthenticated } = useCurrentApp();
+    const cart = localStorage.getItem("carts");
 
     const navigate = useNavigate();
 
@@ -123,7 +124,7 @@ const AppHeader = (props: any) => {
                                     arrow={true}>
                                     <Badge
                                         // count={carts?.length ?? 0}
-                                        count={10}
+                                        count={JSON.parse(cart!).length ?? 0}
                                         size={"small"}
                                         showZero
                                     >

@@ -90,7 +90,11 @@ declare global {
         data?: string[];
     }
 
-
+    interface ICarts {
+        id: string;
+        quantityProducts: number;
+        detail: IBookAdmin;
+    }
 
 }
 
