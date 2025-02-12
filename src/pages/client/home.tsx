@@ -3,6 +3,7 @@ import ListBook from "@/components/client/home/listBook";
 import './home.scss'
 import { useEffect, useState } from "react";
 import { getBookAPI, getCategoryAPI } from "@/services/api";
+import CustomFooter from "@/components/layout/footer";
 
 type IBook = {
     _id: string;
@@ -125,6 +126,7 @@ const HomePage = () => {
                     </div>
                 </div>
             </div>
+            <CustomFooter />
         </>
     )
 }

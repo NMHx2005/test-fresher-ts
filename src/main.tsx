@@ -20,6 +20,7 @@ import ManageBookPage from './pages/admin/manage.book';
 import ManageOrderPage from './pages/admin/manage.order';
 import ManageUserPage from './pages/admin/manage.user';
 import enUS from 'antd/locale/en_US';
+import OrderPage from './pages/client/order';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "/order",
+        element: (
+          <ProtectedRoute>
+            <OrderPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/checkout",

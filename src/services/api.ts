@@ -150,3 +150,10 @@ export const deleteBookAPI = (_id: string) => {
     const urlBackend = `/api/v1/book/${_id}`;
     return axios.delete<IBackendRes<IRegister>>(urlBackend);
 }
+
+
+// Order API
+export const orderAPI = (data: IOrder<IItemOrder>) => {
+    const URL_BACKEND = `/api/v1/order`;
+    return axios.post<IBackendRes<IBookAdmin>>(URL_BACKEND, data);
+}

@@ -1,5 +1,6 @@
 import BookDetail from "@/components/client/book/bookDetail";
 import BookLoader from "@/components/client/book/modal.loader";
+import CustomFooter from "@/components/layout/footer";
 import { getBookById } from "@/services/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -50,6 +51,7 @@ const BookPage = () => {
                     dataBook={dataBook}
                 />
             }
+            <CustomFooter />
         </>
     );
 };

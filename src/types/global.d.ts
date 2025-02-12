@@ -96,5 +96,20 @@ declare global {
         detail: IBookAdmin;
     }
 
+    interface IOrder<T> {
+        name: string;
+        address: string;
+        phone: string;
+        totalPrice: number;
+        type: string;
+        detail: T[]
+    }
+
+    interface IItemOrder {
+        bookName: string;
+        quantity: number,
+        _id: string;
+    }
+
 }
 

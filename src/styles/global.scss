@@ -5,3 +5,28 @@
     margin: 0;
     font-family: "Be Vietnam Pro", serif;
 }
+
+
+.pop-cart-body {
+    width: 300px;
+    overflow: hidden;
+
+    .pop-cart-content img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .pop-cart-content .book {
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .pop-cart-footer {
+        text-align: right;
+
+        button {
+            cursor: pointer;
+        }
+    }
+
+}
