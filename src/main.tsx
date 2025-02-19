@@ -21,6 +21,7 @@ import ManageOrderPage from './pages/admin/manage.order';
 import ManageUserPage from './pages/admin/manage.user';
 import enUS from 'antd/locale/en_US';
 import OrderPage from './pages/client/order';
+import History from './pages/client/history';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <OrderPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/history",
+        element: (
+          <ProtectedRoute>
+            <History />
           </ProtectedRoute>
         ),
       },

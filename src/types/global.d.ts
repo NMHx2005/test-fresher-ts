@@ -10,6 +10,13 @@ declare global {
         data?: T;
     }
 
+    interface IBackendResHistory<T> {
+        error?: string | string[];
+        message: string;
+        statusCode: number | string;
+        data?: T[];
+    }
+
     interface IModelPaginate<T> {
         meta: {
             current: number;
@@ -109,6 +116,39 @@ declare global {
         bookName: string;
         quantity: number,
         _id: string;
+    }
+    interface IHistory {
+        _id: string;
+        name: string;
+        type: string;
+        email: string;
+        phone: string;
+        userId: string;
+        detail:
+        {
+            bookName: string;
+            quantity: number;
+            _id: string;
+        }[];
+        totalPrice: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }
+
+    interface IDataHistory<T> {
+        _id: string;
+        name: string;
+        type: string;
+        email: string;
+        phone: string;
+        userId: string;
+        detail: T[];
+        totalPrice: number;
+        paymentStatus: string;
+        paymentRef: string;
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
     }
 
 }

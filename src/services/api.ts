@@ -157,3 +157,10 @@ export const orderAPI = (data: IOrder<IItemOrder>) => {
     const URL_BACKEND = `/api/v1/order`;
     return axios.post<IBackendRes<IBookAdmin>>(URL_BACKEND, data);
 }
+
+
+// History API
+export const historyAPI = () => {
+    const URL_BACKEND = `api/v1/history`;
+    return axios.get<IBackendRes<IHistory[]>>(URL_BACKEND);
+}

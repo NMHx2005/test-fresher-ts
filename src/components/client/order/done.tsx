@@ -20,7 +20,12 @@ const DoneOrder = (props: IProps) => {
                     <Button key="console" onClick={() => navigate("/")}>
                         Trang Chủ
                     </Button>,
-                    <Button key="buy">Lịch Sử Mua Hàng</Button>,
+                    <Button
+                        key="buy"
+                        onClick={() => navigate("/history")}
+                    >
+                        Lịch Sử Mua Hàng
+                    </Button>,
                 ]}
             />
         </>

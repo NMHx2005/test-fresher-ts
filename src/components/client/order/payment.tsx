@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import type { FormProps } from 'antd';
-import { App, Col, Input, InputNumber, Row, Button, Checkbox, Form, Radio } from "antd";
+import { App, Col, Input, Row, Button, Form, Radio } from "antd";
 import { DeleteOutlined, DoubleLeftOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 import "./order.scss"
 import TextArea from "antd/es/input/TextArea";
 import { orderAPI } from "@/services/api";
@@ -43,6 +42,7 @@ const Payment = (props: IProps) => {
     const { setIsCurrentOrder } = props;
     const { setCarts } = useCurrentApp();
     const [dataOrder, setDataOrder] = useState<ICarts[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { message } = App.useApp();
 
@@ -73,6 +73,7 @@ const Payment = (props: IProps) => {
 
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        setLoading(true);
         const dataCarts = localStorage.getItem("carts");
         if (dataCarts) {
             const cartss = JSON.parse(dataCarts);
@@ -100,6 +101,7 @@ const Payment = (props: IProps) => {
         } else {
             message.error("Không có sản phẩm nào trong giỏ hàng!!!");
         }
+        setLoading(false);
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -241,6 +243,7 @@ const Payment = (props: IProps) => {
                                         transition: "background-color 0.3s",
                                     }}
                                     className="buttonOrder"
+                                    loading={loading}
                                 >
                                     Đặt Hàng
                                 </Button>
