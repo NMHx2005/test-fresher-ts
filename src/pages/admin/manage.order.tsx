@@ -1,7 +1,9 @@
+import Order from "@/components/admin/order/order";
+
 const ManageOrderPage = () => {
     return (
         <div>
-            ManageOrderPage
+            <Order />
         </div>
     )
 }

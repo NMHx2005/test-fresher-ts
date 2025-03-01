@@ -1,11 +1,12 @@
-import { Row, Col, Rate, App } from 'antd';
+import { Row, Col, Rate, App, Breadcrumb } from 'antd';
 import ImageGallery from 'react-image-gallery';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { BsCartPlus } from 'react-icons/bs';
 import './book.scss';
 import ModalGallery from './modal.gallery';
 import { useCurrentApp } from '@/components/context/app.context';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface IBookAdmin {
     _id: string;
@@ -19,7 +20,13 @@ interface IBookAdmin {
     category: string;
     createdAt: string;
     updatedAt: string;
-};
+}
+
+interface ICarts {
+    id: string;
+    quantityProducts: number;
+    detail: IBookAdmin;
+}
 
 interface IProps {
     dataBook: IBookAdmin | null;
@@ -32,9 +39,10 @@ const BookDetail = ({ dataBook }: IProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const refGallery = useRef<ImageGallery>(null);
     const { notification, message } = App.useApp();
-    const { carts, setCarts } = useCurrentApp();
+    const { user, setCarts } = useCurrentApp();
+    const navigate = useNavigate();
 
-    useEffect(() => {
+    const computedImages = useMemo(() => {
         const newImages = [];
         if (dataBook?.thumbnail) {
             newImages.push({
@@ -54,23 +62,30 @@ const BookDetail = ({ dataBook }: IProps) => {
                 });
             });
         }
-        setImages(newImages);
+        return newImages;
     }, [dataBook]);
 
-    const handleOnClickImage = () => {
-        setIsOpenModalGallery(true);
-        setCurrentIndex(refGallery?.current?.getCurrentIndex() ?? 0)
-    }
+    useEffect(() => {
+        setImages(computedImages);
+    }, [computedImages]);
 
-    const handleChangeQuantity = (e: any) => {
-        const x = e.target.value;
-        if (x === "") {
-            setQuantityProduct(1); // Đặt lại giá trị mặc định là 1
-        } else {
-            const num = parseInt(x);
-            if (!isNaN(num) && num >= 1 && num <= dataBook?.quantity!) {
-                setQuantityProduct(num);
-            }
+    const handleOnClickImage = () => {
+        const index = refGallery.current?.getCurrentIndex() ?? 0;
+        setIsOpenModalGallery(true);
+        setCurrentIndex(index);
+    };
+
+    const handleChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === "") {
+            setQuantityProduct(1);
+            return;
+        }
+        const num = parseInt(value);
+        if (!isNaN(num)) {
+            if (num < 1) setQuantityProduct(1);
+            else if (num > (dataBook?.quantity ?? 0)) setQuantityProduct(dataBook?.quantity ?? 1);
+            else setQuantityProduct(num);
         }
     };
 
@@ -78,79 +93,85 @@ const BookDetail = ({ dataBook }: IProps) => {
         if (quantityProduct > 1) {
             setQuantityProduct(quantityProduct - 1);
         } else {
-            notification.warning({
-                message: "Số lượng sản phẩm đã đạt tối thiểu!"
-            });
+            notification.warning({ message: "Số lượng sản phẩm đã đạt tối thiểu!" });
         }
     };
 
     const plusQuantity = () => {
-        if (quantityProduct < dataBook?.quantity!) {
+        if (quantityProduct < (dataBook?.quantity ?? 0)) {
             setQuantityProduct(quantityProduct + 1);
         } else {
-            notification.warning({
-                message: "Số lượng sản phẩm đã đạt tối đa!"
-            });
+            notification.warning({ message: "Số lượng sản phẩm đã đạt tối đa!" });
         }
     };
 
-    const addToCarts = (id: string, quantityProducts: number, detail: IBookAdmin) => {
-        if (quantityProducts > detail.quantity) {
-            notification.warning({
-                message: "Số lượng sản phẩm vượt quá tồn kho!",
-            });
+    const addToCarts = (id: string, quantityProducts: number, detail: IBookAdmin, isBuyNow = false) => {
+        if (!user) {
+            message.error("Bạn cần đăng nhập để thực hiện tính năng này.");
             return;
         }
 
-        // Lấy giỏ hàng từ localStorage
+        if (quantityProducts > detail.quantity) {
+            notification.warning({ message: "Số lượng sản phẩm vượt quá tồn kho!" });
+            return;
+        }
+
         const cartStorage = localStorage.getItem("carts");
-        let carts: ICarts[] = [];
+        let carts: ICarts[] = cartStorage ? JSON.parse(cartStorage) : [];
 
-        if (cartStorage) {
-            carts = JSON.parse(cartStorage) as ICarts[];
-        }
-
-        // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
         const existingProductIndex = carts.findIndex((item) => item.id === id);
-
         if (existingProductIndex !== -1) {
-            // Nếu sản phẩm đã tồn tại, cập nhật số lượng
-            carts[existingProductIndex].quantityProducts += quantityProducts;
+            const newQuantity = carts[existingProductIndex].quantityProducts + quantityProducts;
+            if (newQuantity > detail.quantity) {
+                notification.warning({ message: "Số lượng sản phẩm vượt quá tồn kho!" });
+                return;
+            }
+            carts[existingProductIndex].quantityProducts = newQuantity;
         } else {
-            // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới vào giỏ hàng
-            carts.push({
-                id: id,
-                quantityProducts: quantityProducts,
-                detail: detail,
-            });
+            carts.push({ id, quantityProducts, detail });
         }
 
-        // Cập nhật localStorage
         localStorage.setItem("carts", JSON.stringify(carts));
-
-        // Đồng bộ với React Context
         setCarts(carts);
 
-        // Hiển thị thông báo thành công
-        message.success("Đã thêm thành công vào giỏ hàng!");
+        if (isBuyNow) {
+            navigate("/order");
+        } else {
+            message.success("Thêm sản phẩm vào giỏ hàng thành công.");
+        }
     };
 
+    if (!dataBook) {
+        return <div>Không có dữ liệu sách</div>;
+    }
 
     return (
         <div style={{ background: '#efefef', padding: "20px 0" }}>
             <div className='view-detail-book' style={{ maxWidth: 1440, margin: '0 auto', minHeight: "calc(100vh - 150px)" }}>
+                <Breadcrumb
+                    separator=">"
+                    items={[
+                        {
+                            title: <Link to={"/"}>Trang Chủ</Link>,
+                        },
+
+                        {
+                            title: 'Xem chi tiết sách',
+                        },
+                    ]}
+                />
                 <div style={{ padding: "20px", background: '#fff', borderRadius: 5 }}>
                     <Row gutter={[20, 20]}>
                         <Col md={10} sm={0} xs={0}>
                             <ImageGallery
                                 ref={refGallery}
                                 items={images}
-                                showPlayButton={false} //hide play button
-                                showFullscreenButton={false} //hide fullscreen button
-                                renderLeftNav={() => <></>} //left arrow === <> </>
-                                renderRightNav={() => <></>}//right arrow === <> </>
-                                slideOnThumbnailOver={true}  //onHover => auto scroll images
-                                onClick={() => handleOnClickImage()}
+                                showPlayButton={false}
+                                showFullscreenButton={false}
+                                renderLeftNav={() => <></>}
+                                renderRightNav={() => <></>}
+                                slideOnThumbnailOver={true}
+                                onClick={handleOnClickImage}
                             />
                         </Col>
                         <Col md={14} sm={24}>
@@ -158,25 +179,23 @@ const BookDetail = ({ dataBook }: IProps) => {
                                 <ImageGallery
                                     ref={refGallery}
                                     items={images}
-                                    showPlayButton={false} //hide play button
-                                    showFullscreenButton={false} //hide fullscreen button
-                                    renderLeftNav={() => <></>} //left arrow === <> </>
-                                    renderRightNav={() => <></>}//right arrow === <> </>
+                                    showPlayButton={false}
+                                    showFullscreenButton={false}
+                                    renderLeftNav={() => <></>}
+                                    renderRightNav={() => <></>}
                                     showThumbnails={false}
                                 />
                             </Col>
                             <Col span={24}>
-                                <div className='author'>Tác giả: <a href='#'>{dataBook?.author} </a> </div>
-                                <div className='title'>{dataBook?.mainText}</div>
+                                <div className='author'>Tác giả: <a href='#'>{dataBook.author}</a></div>
+                                <div className='title'>{dataBook.mainText}</div>
                                 <div className='rating' style={{ display: "flex", alignItems: "center" }}>
                                     <Rate value={5} disabled />
-                                    <span className='sold'>
-                                        <div>{dataBook?.sold}</div>
-                                    </span>
+                                    <span className='sold'><div>{dataBook.sold}</div></span>
                                 </div>
                                 <div className='price'>
                                     <span className='currency'>
-                                        {dataBook?.price ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(dataBook.price) : 'N/A'}
+                                        {dataBook.price ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(dataBook.price) : 'N/A'}
                                     </span>
                                 </div>
                                 <div className='delivery'>
@@ -188,21 +207,19 @@ const BookDetail = ({ dataBook }: IProps) => {
                                 <div className='quantity'>
                                     <span className='left'>Số lượng</span>
                                     <span className='right'>
-                                        <button onClick={() => minusQuantity()} >
-                                            <MinusOutlined />
-                                        </button>
-                                        <input onChange={(e) => handleChangeQuantity(e)} value={quantityProduct} min={1} max={dataBook?.quantity} />
-                                        <button onClick={() => plusQuantity()}>
-                                            <PlusOutlined />
-                                        </button>
+                                        <button onClick={minusQuantity}><MinusOutlined /></button>
+                                        <input onChange={handleChangeQuantity} value={quantityProduct} min={1} max={dataBook.quantity} />
+                                        <button onClick={plusQuantity}><PlusOutlined /></button>
                                     </span>
                                 </div>
                                 <div className='buy'>
-                                    <button className='cart' onClick={() => addToCarts(dataBook?._id!, quantityProduct, dataBook!)}>
+                                    <button className='cart' onClick={() => addToCarts(dataBook._id, quantityProduct, dataBook)}>
                                         <BsCartPlus className='icon-cart' />
                                         <span>Thêm vào giỏ hàng</span>
                                     </button>
-                                    <button className='now'>Mua ngay</button>
+                                    <button className='now' onClick={() => addToCarts(dataBook._id, quantityProduct, dataBook, true)}>
+                                        Mua ngay
+                                    </button>
                                 </div>
                             </Col>
                         </Col>
@@ -214,9 +231,10 @@ const BookDetail = ({ dataBook }: IProps) => {
                 setIsOpen={setIsOpenModalGallery}
                 currentIndex={currentIndex}
                 items={images}
-                title={`${dataBook?.mainText}`}
+                title={dataBook.mainText}
             />
         </div>
-    )
-}
+    );
+};
+
 export default BookDetail;

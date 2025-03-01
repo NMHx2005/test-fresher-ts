@@ -10,6 +10,12 @@ declare global {
         data?: T;
     }
 
+    interface IDashboard {
+        countOrder: number;
+        countUser: number;
+        countBook: number;
+    }
+
     interface IBackendResHistory<T> {
         error?: string | string[];
         message: string;
@@ -149,6 +155,55 @@ declare global {
         createdAt: string;
         updatedAt: string;
         __v: number;
+    }
+
+    interface IChangePass {
+        statusCode: number;
+        message: string;
+        data: string;
+        error?: string;
+    }
+
+    interface IPassChange {
+        email?: string;
+        oldpass: string;
+        newpass: string;
+    }
+
+    interface ApiResponse {
+        statusCode: number;
+        message: string;
+        data: {
+            meta: {
+                current: number;
+                pageSize: number;
+                pages: number;
+                total: number;
+            };
+            result: Order[];
+        };
+        author: string;
+    }
+
+    interface Order {
+        _id: string;
+        name: string;
+        address: string;
+        phone: string;
+        type: string;
+        paymentStatus: string;
+        paymentRef: string;
+        detail: OrderDetail[];
+        totalPrice: number;
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
+    }
+
+    interface OrderDetail {
+        bookName: string;
+        quantity: number;
+        _id: string;
     }
 
 }

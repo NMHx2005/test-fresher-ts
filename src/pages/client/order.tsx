@@ -2,8 +2,9 @@ import DoneOrder from "@/components/client/order/done";
 import Order from "@/components/client/order/order";
 import Payment from "@/components/client/order/payment";
 import CustomFooter from "@/components/layout/footer";
-import { Steps } from "antd";
+import { Breadcrumb, Steps } from "antd";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 
 const OrderPage = () => {
@@ -13,6 +14,18 @@ const OrderPage = () => {
         <>
             <div style={{ background: '#efefef', padding: "20px 0" }}>
                 <div style={{ maxWidth: 1440, margin: '0 auto', minHeight: "calc(100vh - 150px)" }}>
+                    <Breadcrumb
+                        separator=">"
+                        items={[
+                            {
+                                title: <Link to={"/"}>Trang Chủ</Link>,
+                            },
+
+                            {
+                                title: 'Chi Tiết Giỏ Hàng',
+                            },
+                        ]}
+                    />
                     <Steps
                         style={{ marginBottom: "20px", backgroundColor: "white", padding: "20px", borderRadius: "4px" }}
                         size="small"

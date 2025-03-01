@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Row, Col, Typography, Divider } from 'antd';
 import './footer.scss';
-import Icon, { TikTokOutlined, YoutubeOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined, PhoneOutlined, MailOutlined, TikTokOutlined, YoutubeOutlined } from '@ant-design/icons'; // Import các icon cần thiết
 
 const { Footer } = Layout;
 const { Text, Link } = Typography;
@@ -16,13 +16,13 @@ const CustomFooter = () => {
                     <Divider className="footer-divider" />
                     <ul>
                         <li>
-                            <Icon type="environment" /> Số 2 Ngõ 109 Bằng Liệt - Hà Nội
+                            <EnvironmentOutlined /> Số 2 Ngõ 109 Bằng Liệt - Hà Nội
                         </li>
                         <li>
-                            <Icon type="phone" /> +84 123 456 789
+                            <PhoneOutlined /> +84 123 456 789
                         </li>
                         <li>
-                            <Icon type="mail" /> 22092005nguyenhung@gmail.com
+                            <MailOutlined /> 22092005nguyenhung@gmail.com
                         </li>
                     </ul>
                 </Col>

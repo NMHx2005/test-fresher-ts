@@ -164,3 +164,36 @@ export const historyAPI = () => {
     const URL_BACKEND = `api/v1/history`;
     return axios.get<IBackendRes<IHistory[]>>(URL_BACKEND);
 }
+
+
+// Update Password
+export const updatePassWordAPI = (dataUpdate: IPassChange) => {
+    const URL_BACKEND = `/api/v1/user/change-password`;
+    return axios.post<IChangePass>(URL_BACKEND, dataUpdate);
+}
+
+// Update User Password
+export const updateUserInfoAPI = (
+    _id: string, avatar: string,
+    fullName: string, phone: string) => {
+    const urlBackend = "/api/v1/user";
+    return axios.put<IBackendRes<IRegister>>(urlBackend,
+        { fullName, phone, avatar, _id })
+}
+
+
+
+// API Dashboard
+export const dashBoardAPI = () => {
+    const urlBackend = "/api/v1/database/dashboard";
+    return axios.get<IBackendRes<IDashboard>>(urlBackend);
+}
+
+
+
+
+// API OrderAdmin
+export const orderAdminAPI = (query: string) => {
+    const urlBackend = `/api/v1/order?${query}`;
+    return axios.get<ApiResponse>(urlBackend);
+}

@@ -2,7 +2,7 @@ import { registerAPI } from "@/services/api";
 import { App, Button, Divider, Form, FormProps, Input } from "antd";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import "./responsive.scss"
 interface IFieldType {
     fullName: string;
     password: string;
@@ -35,15 +35,7 @@ const RegisterPage = () => {
 
     return (
         <>
-            <div style={{
-                width: "30%",
-                margin: "100px auto",
-                height: "auto",
-                boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-                padding: "50px",
-                borderRadius: "12px",
-
-            }}>
+            <div className="login__container">
                 <div style={{
                     width: "100%"
                 }}>

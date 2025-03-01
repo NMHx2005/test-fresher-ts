@@ -1,7 +1,7 @@
 import { FaReact } from 'react-icons/fa';
 import { FiShoppingCart } from 'react-icons/fi';
 import { VscSearchFuzzy } from 'react-icons/vsc';
-import { Divider, Badge, Drawer, Avatar, Popover, App, Empty } from 'antd';
+import { Divider, Badge, Drawer, Avatar, Popover, App, Empty, Button } from 'antd';
 import { Dropdown, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './app.header.scss';
@@ -9,12 +9,19 @@ import { Link } from 'react-router-dom';
 import { useCurrentApp } from 'components/context/app.context';
 import { logoutAPI } from '@/services/api';
 import { useState } from 'react';
+import UpdateCurrentUser from '../client/home/updateCurrentUser';
 
-const AppHeader = (props: any) => {
+interface IProps {
+    searchTerm: string;
+    setSearchTerm: (v: string) => void;
+}
+
+const AppHeader = (props: IProps) => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const { message } = App.useApp();
+    const [isModalOpenUpdateUser, setIsModalOpenUpdateUser] = useState<boolean>(false);
 
-    const { isAuthenticated, user, setUser, setIsAuthenticated } = useCurrentApp();
+    const { isAuthenticated, user, setUser, setIsAuthenticated, setCarts } = useCurrentApp();
     const cart = localStorage.getItem("carts");
     const carts = cart ? JSON.parse(cart) : [];
 
@@ -26,17 +33,20 @@ const AppHeader = (props: any) => {
             setUser(null);
             setIsAuthenticated(false);
             localStorage.removeItem("access_token");
+            setCarts([]);
+            localStorage.removeItem("carts");
             message.success("Đăng Xuất Thành Công!!!");
         } else {
             message.error("Đăng Xuất Thất Bại!!!");
         }
     };
-
     let items = [
         {
             label: <label
                 style={{ cursor: 'pointer' }}
-                onClick={() => alert("me")}
+                onClick={() =>
+                    setIsModalOpenUpdateUser(true)
+                }
             >Quản lý tài khoản</label>,
             key: 'account',
         },
@@ -103,8 +113,8 @@ const AppHeader = (props: any) => {
                             className="input-search"
                             type={'text'}
                             placeholder="Bạn tìm gì hôm nay"
-                        // value={props.searchTerm}
-                        // onChange={(e) => props.setSearchTerm(e.target.value)}
+                            value={props.searchTerm}
+                            onChange={(e) => props.setSearchTerm(e.target.value)}
                         />
                     </div>
                 </div>
@@ -118,6 +128,7 @@ const AppHeader = (props: any) => {
                                 title={"Sản phẩm mới thêm"}
                                 content={contentPopover}
                                 arrow={true}
+                                trigger={window.innerWidth > 768 ? ['hover'] : ['click']}
                             >
                                 <Badge
                                     count={carts.length ?? 0}
@@ -151,11 +162,27 @@ const AppHeader = (props: any) => {
                 onClose={() => setOpenDrawer(false)}
                 open={openDrawer}
             >
+                <p onClick={() => {
+                    navigate("/");
+                    setOpenDrawer(false);
+                }}>Trang Chủ</p>
+                <Divider />
                 <p>Quản lý tài khoản</p>
                 <Divider />
-                <p onClick={() => handleLogout()}>Đăng xuất</p>
+                {isAuthenticated ?
+                    <p onClick={() => handleLogout()}>Đăng xuất</p>
+                    :
+                    <p onClick={() => {
+                        navigate("/login")
+                        setOpenDrawer(false);
+                    }}>Đăng nhập</p>
+                }
                 <Divider />
             </Drawer>
+            <UpdateCurrentUser
+                isModalOpenUpdateUser={isModalOpenUpdateUser}
+                setIsModalOpenUpdateUser={setIsModalOpenUpdateUser}
+            />
         </div>
     );
 };

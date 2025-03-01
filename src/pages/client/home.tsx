@@ -4,6 +4,7 @@ import './home.scss'
 import { useEffect, useState } from "react";
 import { getBookAPI, getCategoryAPI } from "@/services/api";
 import CustomFooter from "@/components/layout/footer";
+import { useOutletContext } from "react-router-dom";
 
 type IBook = {
     _id: string;
@@ -26,6 +27,7 @@ const HomePage = () => {
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [total, setTotal] = useState(10);
+    const [searchTerm] = useOutletContext() as any;
 
     useEffect(() => {
         const categoryListBook = async () => {
@@ -39,11 +41,11 @@ const HomePage = () => {
             }
         }
         categoryListBook();
-    }, []);
+    }, [current, pageSize]);
 
     useEffect(() => {
         fetchBook();
-    }, [current, pageSize]);
+    }, [current, pageSize, searchTerm]);
 
     const fetchBook = async (queryPlus = '') => {
         setLoader(true);
@@ -54,6 +56,9 @@ const HomePage = () => {
             query = `${query}${queryPlus}`;
         }
 
+        if (searchTerm) {
+            query += `&mainText=/${searchTerm}/i`;
+        }
 
         const listBookResponse = await getBookAPI(query);
         if (listBookResponse.data) {
