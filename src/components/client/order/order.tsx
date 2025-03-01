@@ -78,13 +78,13 @@ const Order = (props: IProps) => {
 
     return (
         <div style={{ background: '#efefef', padding: "20px 0" }}>
-            <div style={{ maxWidth: 1440, margin: '0 auto', minHeight: "calc(100vh - 150px)", display: "flex" }}>
-                <Row gutter={[16, 16]} style={{ width: "100%" }}>
+            <div style={{ maxWidth: 1440, margin: '0 auto', minHeight: "calc(100vh - 150px)", display: "flex", justifyContent: "center" }}>
+                <Row gutter={[16, 16]} style={{ width: "100%", justifyContent: "center" }}>
                     <Col xl={18}>
                         <div>
                             {dataOrder.length > 0 ? (
                                 dataOrder.map((item: ICarts) => (
-                                    <div key={item.id} style={{ marginBottom: "20px", backgroundColor: "white", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px" }}>
+                                    <div key={item.id} style={{ marginBottom: "20px", backgroundColor: "white", display: "flex", alignItems: "center", flexWrap: "wrap", justifyContent: "space-between", padding: "15px" }}>
                                         <img
                                             width={"80px"}
                                             src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item.detail.thumbnail}`}
