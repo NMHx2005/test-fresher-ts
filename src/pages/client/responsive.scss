@@ -1,5 +1,11 @@
-@media (max-wdidth: 640px) {
+.step__order {
+    display: none;
+    /* Ẩn mặc định trên mobile */
+}
+
+@media (min-width: 576px) {
     .step__order {
-        display: none;
+        display: block;
+        /* Hiển thị trên màn lớn hơn */
     }
 }

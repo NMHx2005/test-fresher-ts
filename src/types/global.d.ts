@@ -115,6 +115,7 @@ declare global {
         phone: string;
         totalPrice: number;
         type: string;
+        paymentRef?: string;
         detail: T[]
     }
 
@@ -139,6 +140,8 @@ declare global {
         totalPrice: number;
         createdAt: Date;
         updatedAt: Date;
+        paymentStatus: string;
+        paymentRef: string;
     }
 
     interface IDataHistory<T> {

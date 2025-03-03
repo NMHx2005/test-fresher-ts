@@ -26,21 +26,25 @@ const OrderPage = () => {
                             },
                         ]}
                     />
-                    <Col className="step__order" xs={{ span: 0 }}>
+                    <Col
+                        className="step__order"
+                        xs={{ span: 0 }}  // Ẩn trên mobile (< 576px)
+                        sm={{ span: 24 }} // Hiển thị trên small (≥ 576px)
+                        md={{ span: 24 }} // Hiển thị trên medium (≥ 768px)
+                    >
                         <Steps
-                            style={{ marginBottom: "20px", backgroundColor: "white", padding: "20px", borderRadius: "4px" }}
+                            style={{
+                                marginBottom: "20px",
+                                backgroundColor: "white",
+                                padding: "20px",
+                                borderRadius: "4px"
+                            }}
                             size="small"
                             current={isCurrentOrder}
                             items={[
-                                {
-                                    title: 'Đơn Hàng',
-                                },
-                                {
-                                    title: 'Đặt Hàng',
-                                },
-                                {
-                                    title: 'Thanh Toán',
-                                },
+                                { title: 'Đơn Hàng' },
+                                { title: 'Đặt Hàng' },
+                                { title: 'Thanh Toán' },
                             ]}
                         />
                     </Col>

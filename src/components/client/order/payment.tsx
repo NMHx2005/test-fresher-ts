@@ -4,7 +4,8 @@ import { App, Col, Input, Row, Button, Form, Radio } from "antd";
 import { DeleteOutlined, DoubleLeftOutlined } from "@ant-design/icons";
 import "./order.scss"
 import TextArea from "antd/es/input/TextArea";
-import { orderAPI } from "@/services/api";
+import { getVNPayUrlAPI, orderAPI } from "@/services/api";
+import { v4 as uuidv4 } from 'uuid';
 import { useCurrentApp } from "@/components/context/app.context";
 
 interface IBookAdmin {
@@ -82,19 +83,47 @@ const Payment = (props: IProps) => {
                 quantity: item.quantityProducts,
                 _id: item.id
             }));
-            const data = {
-                name: values.username,
-                address: values.address,
-                phone: values.phone,
-                totalPrice: totalAmount,
-                type: values.method,
-                detail: detaiProduct
-            };
-            const res = await orderAPI(data);
+
+            let res = null;
+            const paymentRef = uuidv4();
+            if (values.method == "COD") {
+                const data = {
+                    name: values.username,
+                    address: values.address,
+                    phone: values.phone,
+                    totalPrice: totalAmount,
+                    type: values.method,
+                    detail: detaiProduct
+                };
+                res = await orderAPI(data);
+            } else {
+                const data = {
+                    name: values.username,
+                    address: values.address,
+                    phone: values.phone,
+                    totalPrice: totalAmount,
+                    type: values.method,
+                    detail: detaiProduct,
+                    paymentRef: paymentRef
+                };
+
+                res = await orderAPI(data);
+            }
             if (res.data) {
-                setIsCurrentOrder(2);
                 localStorage.removeItem("carts");
                 setCarts([]);
+                if (values.method == "COD") {
+                    message.success("Mua hàng thành công!!!");
+                    setIsCurrentOrder(2);
+                } else {
+                    // redirect to VNPAY
+                    const r = await getVNPayUrlAPI(totalAmount, "vn", paymentRef);
+                    if (r.data) {
+                        window.location.href = r.data.url;
+                    } else {
+                        message.error("Có lỗi xảy ra !!!!");
+                    }
+                }
             } else {
                 message.error("Không có sản phẩm nào trong giỏ hàng!!!");
             }
@@ -182,7 +211,7 @@ const Payment = (props: IProps) => {
                                 <Radio.Group
                                     options={[
                                         { value: "COD", label: 'Thanh toán khi nhận hàng' },
-                                        { value: "BANK", label: 'Chuyển khoản ngân hàng' }
+                                        { value: "BANK", label: 'Thanh toán bằng ví VNPAY' }
                                     ]}
                                 />
                             </Form.Item>
