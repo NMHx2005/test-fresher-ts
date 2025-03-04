@@ -221,3 +221,12 @@ export const updatePaymentOrderAPI = (paymentStatus: string, paymentRef: string)
         }
     )
 }
+
+
+
+// Login
+export const loginWithGoogleAPI = (type: string, email: string) => {
+    const URL_BACKEND = "/api/v1/auth/social-media";
+    const data = { type, email };
+    return axios.post<IBackendRes<ILogin>>(URL_BACKEND, data);
+}
